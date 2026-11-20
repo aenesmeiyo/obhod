@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/a1nessv/obhod/releases/latest">
-    <img alt="Скачать для Windows" src="https://img.shields.io/badge/Скачать-Windows%2010%2F11-2ea043?style=for-the-badge&logo=windows&logoColor=white" />
+    <img alt="Скачать для Windows" src="https://img.shields.io/badge/Download-Windows%2010%2F11-2ea043?style=for-the-badge&logo=windows&logoColor=white" />
   </a>
   <img alt="Electron" src="https://img.shields.io/badge/Electron-45-47848F?style=for-the-badge&logo=electron&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
