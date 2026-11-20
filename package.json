@@ -34,7 +34,7 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
-    "dist": "electron-vite build && electron-builder --win nsis",
+    "dist": "electron-vite build && electron-builder --win nsis --publish never",
     "dist:dir": "electron-vite build && electron-builder --win dir"
   },
   "dependencies": {
