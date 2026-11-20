@@ -1,0 +1,36 @@
+appId: ru.obhod.app
+productName: Obhod
+copyright: Obhod
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - package.json
+asar: true
+asarUnpack:
+  - resources/**
+extraResources:
+  - from: resources
+    to: resources
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  requestedExecutionLevel: requireAdministrator
+  artifactName: Obhod-Setup-${version}.exe
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Обход
+  installerLanguages:
+    - ru_RU
+  language: '1049'
+  deleteAppDataOnUninstall: false
+  uninstallDisplayName: Обход

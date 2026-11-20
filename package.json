@@ -1,0 +1,58 @@
+{
+  "name": "obhod",
+  "version": "1.0.0",
+  "description": "Обход — единый центр управления zapret-discord-youtube и TG WS Proxy",
+  "main": "./out/main/index.js",
+  "author": "Obhod contributors",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a1nessv/obhod.git"
+  },
+  "homepage": "https://github.com/a1nessv/obhod#readme",
+  "bugs": {
+    "url": "https://github.com/a1nessv/obhod/issues"
+  },
+  "keywords": [
+    "zapret",
+    "tg-ws-proxy",
+    "discord",
+    "youtube",
+    "telegram",
+    "dpi",
+    "bypass",
+    "windows",
+    "electron"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@11.28.5",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "dist": "electron-vite build && electron-builder --win nsis",
+    "dist:dir": "electron-vite build && electron-builder --win dir"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.1",
+    "glisse": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.6.0",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0",
+    "electron-vite": "^6.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.8"
+  }
+}

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Вопрос по zapret-discord-youtube
+    url: https://github.com/Flowseal/zapret-discord-youtube/issues
+    about: Проблемы со стратегиями и самим zapret лучше обсуждать в upstream-репозитории.
+  - name: Вопрос по tg-ws-proxy
+    url: https://github.com/Flowseal/tg-ws-proxy/issues
+    about: Проблемы с Telegram-прокси и его настройками — в upstream-репозитории.

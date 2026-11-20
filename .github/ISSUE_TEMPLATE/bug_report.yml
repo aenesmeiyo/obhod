@@ -1,0 +1,58 @@
+name: Баг
+description: Что-то не работает или выглядит не так
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо за отчёт! Пожалуйста, не прикладывайте токены, пароли и полные секреты прокси.
+  - type: textarea
+    id: what
+    attributes:
+      label: Что произошло
+      description: Опишите проблему и что вы ожидали увидеть.
+      placeholder: Нажал «Включить обход», статус остался «Выключен»...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Шаги воспроизведения
+      placeholder: |
+        1. Открыть «Обход»
+        2. Скачать Zapret
+        3. Включить...
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Версия Windows
+      placeholder: Windows 11 24H2 (26100)
+    validations:
+      required: true
+  - type: input
+    id: app
+    attributes:
+      label: Версия приложения
+      description: Настройки → Приложение, или файл установщика.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Лог
+      description: Последние строки из `%LOCALAPPDATA%\Obhod\logs\app.log`.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Проверки
+      options:
+        - label: Я запускал приложение от имени администратора
+        - label: Я проверил, что проблема не только в zapret/tg-ws-proxy
+        - label: В отчёте нет личных данных и секретов
+          required: true
