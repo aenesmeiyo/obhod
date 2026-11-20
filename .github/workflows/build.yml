@@ -51,6 +51,19 @@ jobs:
           $hash = (Get-FileHash $exe -Algorithm SHA256).Hash
           "$hash  $([IO.Path]::GetFileName($exe))" | Set-Content release/SHA256SUMS.txt -Encoding ascii
 
+      - name: Pick release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: notes
+        shell: pwsh
+        run: |
+          $notes = "releases/${{ github.ref_name }}.md"
+          if (Test-Path $notes) {
+            "custom=true" >> $env:GITHUB_OUTPUT
+            "path=$notes" >> $env:GITHUB_OUTPUT
+          } else {
+            "custom=false" >> $env:GITHUB_OUTPUT
+          }
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -62,11 +75,23 @@ jobs:
           retention-days: 14
 
       - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && steps.notes.outputs.custom == 'true'
         uses: softprops/action-gh-release@v2
         with:
+          name: Обход ${{ steps.version.outputs.value }}
+          body_path: ${{ steps.notes.outputs.path }}
           files: |
             release/Obhod-Setup-${{ steps.version.outputs.value }}.exe
             release/SHA256SUMS.txt
+          fail_on_unmatched_files: true
+
+      - name: Publish GitHub Release (generated notes)
+        if: startsWith(github.ref, 'refs/tags/v') && steps.notes.outputs.custom != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Обход ${{ steps.version.outputs.value }}
           generate_release_notes: true
+          files: |
+            release/Obhod-Setup-${{ steps.version.outputs.value }}.exe
+            release/SHA256SUMS.txt
           fail_on_unmatched_files: true

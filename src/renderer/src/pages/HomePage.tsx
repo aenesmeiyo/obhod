@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import type { AppState, ProgressEvent } from '@shared/types'
 import { GlassSwitch } from '../components/GlassSwitch'
-import { PowerButton } from '../components/PowerButton'
 import { ProgressBar } from '../components/ProgressBar'
 import {
   IconArrowUpRight,
@@ -54,26 +53,26 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
     }
   }
 
+  const installZapret = (): void => {
+    void act('zapret', 'install', async () => {
+      await window.obhod.installZapret()
+      await window.obhod.startZapret()
+    })
+  }
+
   const toggleZapret = (): void => {
-    if (!zapret.installed) {
-      void act('zapret', 'install', async () => {
-        await window.obhod.installZapret()
-        await window.obhod.startZapret()
-      })
-      return
-    }
     if (zapret.running) void act('zapret', 'stop', () => window.obhod.stopZapret())
     else void act('zapret', 'start', () => window.obhod.startZapret())
   }
 
+  const installTgws = (): void => {
+    void act('tgws', 'install', async () => {
+      await window.obhod.installTgws()
+      await window.obhod.startTgws()
+    })
+  }
+
   const toggleTgws = (): void => {
-    if (!tgws.installed) {
-      void act('tgws', 'install', async () => {
-        await window.obhod.installTgws()
-        await window.obhod.startTgws()
-      })
-      return
-    }
     if (tgws.running) void act('tgws', 'stop', () => window.obhod.stopTgws())
     else void act('tgws', 'start', () => window.obhod.startTgws())
   }
@@ -88,16 +87,6 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
           <span className="eyebrow">Локальный обход</span>
           <h1>Discord, YouTube и Telegram — снова на связи.</h1>
           <p>Один экран вместо bat-файлов, папок и поиска рабочей стратегии.</p>
-        </div>
-        <div className="hero-status">
-          <div className={`status-pill ${zapret.running ? 'is-on' : ''}`}>
-            <span className="status-dot" />
-            Zapret <strong>{zapret.running ? 'вкл' : 'выкл'}</strong>
-          </div>
-          <div className={`status-pill ${tgws.running ? 'is-on' : ''}`}>
-            <span className="status-dot" />
-            Telegram <strong>{tgws.running ? 'вкл' : 'выкл'}</strong>
-          </div>
         </div>
       </section>
 
@@ -118,7 +107,12 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
             <GlassSwitch
               checked={zapret.running}
               onChange={toggleZapret}
-              disabled={busy.zapret !== null || zapret.busy || (zapret.installed && !state.elevated)}
+              disabled={
+                busy.zapret !== null ||
+                zapret.busy ||
+                !zapret.installed ||
+                !state.elevated
+              }
               label="Включить обход Zapret"
             />
           </header>
@@ -139,30 +133,6 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
             служб.
           </p>
 
-          <div className="chip-row">
-            <button
-              type="button"
-              className="chip"
-              onClick={onOpenStrategy}
-              disabled={!zapret.installed}
-              title="Выбрать стратегию"
-            >
-              <IconGauge size={14} />
-              <span>{zapret.strategy.replace(/\.bat$/i, '')}</span>
-              <IconChevron size={13} />
-            </button>
-            <button
-              type="button"
-              className="chip"
-              onClick={onOpenSettings}
-              disabled={!zapret.installed}
-              title="Настройки Game Filter"
-            >
-              <IconShield size={14} />
-              <span>Game Filter · {gameFilterLabel(zapret.gameFilter.mode)}</span>
-            </button>
-          </div>
-
           <div className="card-footer">
             {zapretProgress ? (
               <ProgressBar progress={zapretProgress} />
@@ -170,7 +140,7 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
               <button
                 type="button"
                 className="button button-light button-install"
-                onClick={toggleZapret}
+                onClick={installZapret}
                 disabled={busy.zapret !== null}
               >
                 <IconDownload size={17} />
@@ -178,17 +148,27 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
                 <em>1,5 МБ</em>
               </button>
             ) : (
-              <PowerButton
-                active={zapret.running}
-                busy={busy.zapret !== null}
-                disabled={zapret.busy || !state.elevated}
-                onClick={toggleZapret}
-                wide
-                title={!state.elevated ? 'Нужны права администратора — нажмите «Перезапустить» сверху' : undefined}
-                busyLabel={busy.zapret === 'stop' ? 'Останавливаем…' : 'Запускаем…'}
-                onLabel="Выключить обход"
-                offLabel="Включить обход"
-              />
+              <div className="chip-row footer-chips">
+                <button
+                  type="button"
+                  className="chip"
+                  onClick={onOpenStrategy}
+                  title="Выбрать стратегию"
+                >
+                  <IconGauge size={14} />
+                  <span>{zapret.strategy.replace(/\.bat$/i, '')}</span>
+                  <IconChevron size={13} />
+                </button>
+                <button
+                  type="button"
+                  className="chip"
+                  onClick={onOpenSettings}
+                  title="Настройки Game Filter"
+                >
+                  <IconShield size={14} />
+                  <span>Game Filter · {gameFilterLabel(zapret.gameFilter.mode)}</span>
+                </button>
+              </div>
             )}
           </div>
         </section>
@@ -209,7 +189,7 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
             <GlassSwitch
               checked={tgws.running}
               onChange={toggleTgws}
-              disabled={busy.tgws !== null || tgws.busy}
+              disabled={busy.tgws !== null || tgws.busy || !tgws.installed}
               label="Включить прокси Telegram"
             />
           </header>
@@ -226,16 +206,18 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
             сторонних клиентов.
           </p>
 
-          <div className="chip-row">
-            <span className="chip chip-static">
-              <IconClock size={14} />
-              <span>127.0.0.1:{tgws.port}</span>
-            </span>
-            <span className="chip chip-static">
-              <IconSparkles size={14} />
-              <span>CF Proxy · H2</span>
-            </span>
-          </div>
+          {tgws.installed ? (
+            <div className="chip-row">
+              <span className="chip chip-static">
+                <IconClock size={14} />
+                <span>127.0.0.1:{tgws.port}</span>
+              </span>
+              <span className="chip chip-static">
+                <IconSparkles size={14} />
+                <span>CF Proxy · H2</span>
+              </span>
+            </div>
+          ) : null}
 
           <div className="card-footer">
             {tgwsProgress ? (
@@ -244,7 +226,7 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
               <button
                 type="button"
                 className="button button-light button-install"
-                onClick={toggleTgws}
+                onClick={installTgws}
                 disabled={busy.tgws !== null}
               >
                 <IconDownload size={17} />
@@ -253,15 +235,6 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
               </button>
             ) : (
               <div className="footer-split">
-                <PowerButton
-                  active={tgws.running}
-                  busy={busy.tgws !== null}
-                  disabled={tgws.busy}
-                  onClick={toggleTgws}
-                  busyLabel="…"
-                  onLabel="Выключить"
-                  offLabel="Включить"
-                />
                 <button
                   type="button"
                   className="button button-connect"
@@ -291,9 +264,6 @@ export function HomePage({ state, progress, onOpenStrategy, onOpenSettings }: Pr
       <footer className="home-footer">
         <span>
           <IconShield size={14} /> Всё работает локально — данные не уходят на серверы
-        </span>
-        <span className="footer-note">
-          {state.elevated ? 'Права администратора есть' : 'Нет прав администратора — Zapret не запустится'}
         </span>
       </footer>
     </div>

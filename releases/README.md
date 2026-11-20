@@ -4,6 +4,7 @@
 
 | Файл | Размер | SHA-256 |
 | --- | --- | --- |
+| `Obhod-Setup-1.0.1.exe` | 115,9 МБ | `6A80F3B7EC41A2BDA6D087FB1AA255491029345C41598DE887B4ED6E43CC647A` |
 | `Obhod-Setup-1.0.0.exe` | 115,9 МБ | `B10636E4727652DB65F7F891A3FFA35A3BD56C6BF00E494AD6A5F24B602E8785` |
 
 > Установщик — это один self-contained `.exe` с NSIS. Отдельные файлы приложения не нужны.
@@ -19,6 +20,6 @@ desktop-приложений: релиз — та самая «папка со �
 ## Проверка файла
 
 ```powershell
-Get-FileHash .\Obhod-Setup-1.0.0.exe -Algorithm SHA256
-# B10636E4727652DB65F7F891A3FFA35A3BD56C6BF00E494AD6A5F24B602E8785
+Get-FileHash .\Obhod-Setup-1.0.1.exe -Algorithm SHA256
+# 6A80F3B7EC41A2BDA6D087FB1AA255491029345C41598DE887B4ED6E43CC647A
 ```

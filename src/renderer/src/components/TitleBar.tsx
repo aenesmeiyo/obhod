@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { SegmentedControl } from 'glisse'
 import type { NavTarget } from '@shared/types'
 import { IconFlask, IconHome, IconMinus, IconSettings, IconTerminal, IconX } from '../icons'
 
@@ -15,7 +16,19 @@ interface Props {
 }
 
 export function TitleBar({ page, onNavigate, onLogs }: Props) {
-  const index = items.findIndex((item) => item.id === page)
+  const segmentedItems = items.map((item) => {
+    const Icon = item.icon
+    return {
+      value: item.id,
+      label: (
+        <span className="nav-label">
+          <Icon size={16} />
+          <span>{item.label}</span>
+        </span>
+      )
+    }
+  })
+
   return (
     <header className="titlebar">
       <div className="brand">
@@ -26,22 +39,13 @@ export function TitleBar({ page, onNavigate, onLogs }: Props) {
         <span className="brand-name">Обход</span>
       </div>
 
-      <nav className="nav" style={{ ['--nav-index' as string]: index }}>
-        <span className="nav-thumb" aria-hidden="true" />
-        {items.map((item) => {
-          const Icon = item.icon
-          return (
-            <button
-              key={item.id}
-              type="button"
-              className={`nav-item ${page === item.id ? 'is-active' : ''}`}
-              onClick={() => onNavigate(item.id)}
-            >
-              <Icon size={16} />
-              <span>{item.label}</span>
-            </button>
-          )
-        })}
+      <nav className="nav" aria-label="Разделы">
+        <SegmentedControl
+          className="nav-segmented"
+          items={segmentedItems}
+          value={page}
+          onValueChange={(value) => onNavigate(value as NavTarget)}
+        />
       </nav>
 
       <div className="title-actions">
