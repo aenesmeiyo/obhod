@@ -7,20 +7,48 @@ import type {
   ToastEvent
 } from '@shared/types'
 
-export function useAppState(): AppState | null {
+export interface AppStateResult {
+  state: AppState | null
+  error: string | null
+  retry: () => void
+}
+
+export function useAppState(): AppStateResult {
   const [state, setState] = useState<AppState | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [attempt, setAttempt] = useState(0)
+
   useEffect(() => {
     let alive = true
-    void window.obhod.getState().then((value) => {
-      if (alive) setState(value)
-    })
-    const unsubscribe = window.obhod.onState((value) => setState(value))
+    setError(null)
+    let unsubscribe: (() => void) | null = null
+    try {
+      window.obhod
+        .getState()
+        .then((value) => {
+          if (alive) setState(value)
+        })
+        .catch((reason: unknown) => {
+          if (alive) setError(reason instanceof Error ? reason.message : String(reason))
+        })
+      unsubscribe = window.obhod.onState((value) => setState(value))
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : String(reason))
+    }
     return () => {
       alive = false
-      unsubscribe()
+      unsubscribe?.()
     }
-  }, [])
-  return state
+  }, [attempt])
+
+  return {
+    state,
+    error,
+    retry: () => {
+      setState(null)
+      setAttempt((value) => value + 1)
+    }
+  }
 }
 
 export interface ToastItem extends ToastEvent {

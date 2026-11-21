@@ -7,13 +7,15 @@ import type {
   ComponentId,
   GameFilter,
   IpsetMode,
-  UiSettings
+  TgwsInfo,
+  UiSettings,
+  ZapretInfo
 } from '@shared/types'
 import { zapret, tgws, tester, updates } from './services'
 import { getState, updateState } from './store'
 import { logger, getLogs } from './logger'
 import { events } from './events'
-import { dataDir, downloadsDir, logsDir, zapretDir, tgwsDir } from './paths'
+import { dataDir, downloadsDir, logsDir, zapretDir, tgwsDir, tgwsExePath } from './paths'
 import { run } from './proc'
 import { parseStrategy } from './zapret/strategy'
 import { readGameFilter } from './zapret/settings'
@@ -26,14 +28,68 @@ export function setElevated(value: boolean): void {
   events.state()
 }
 
+function fallbackZapretInfo(): ZapretInfo {
+  const state = getState()
+  const installed = zapret.isInstalled()
+  return {
+    installed,
+    version: installed ? state.zapret.version : null,
+    path: installed ? zapret.rootDir : null,
+    running: false,
+    pid: null,
+    strategy: state.zapret.strategy,
+    strategies: [],
+    gameFilter: state.zapret.gameFilter,
+    ipsetMode: 'none',
+    autoUpdate: state.zapret.autoUpdate,
+    update: state.zapret.update,
+    busy: false,
+    error: null
+  }
+}
+
+function fallbackTgwsInfo(): TgwsInfo {
+  const state = getState()
+  const installed = tgws.isInstalled()
+  return {
+    installed,
+    version: installed ? state.tgws.version : null,
+    path: installed ? tgwsExePath() : null,
+    running: false,
+    pid: null,
+    port: state.tgws.port,
+    secret: state.tgws.secret,
+    link: `tg://proxy?server=127.0.0.1&port=${state.tgws.port}&secret=dd${state.tgws.secret}`,
+    autoUpdate: state.tgws.autoUpdate,
+    update: state.tgws.update,
+    busy: false,
+    error: null
+  }
+}
+
 export function buildState(): AppState {
+  const persisted = getState()
+  let zapretInfo: ZapretInfo
+  let tgwsInfo: TgwsInfo
+  try {
+    zapretInfo = zapret.getInfo()
+  } catch (error) {
+    logger.error(`Не удалось собрать состояние Zapret: ${asErrorMessage(error)}`)
+    zapretInfo = { ...fallbackZapretInfo(), error: asErrorMessage(error) }
+  }
+  try {
+    tgwsInfo = tgws.getInfo()
+  } catch (error) {
+    logger.error(`Не удалось собрать состояние TG WS Proxy: ${asErrorMessage(error)}`)
+    tgwsInfo = { ...fallbackTgwsInfo(), error: asErrorMessage(error) }
+  }
   return {
     ready: true,
     elevated,
     appVersion: app.getVersion(),
-    zapret: zapret.getInfo(),
-    tgws: tgws.getInfo(),
-    ui: getState().ui,
+    zapret: zapretInfo,
+    tgws: tgwsInfo,
+    ui: persisted.ui,
     testing: tester.isTesting,
     diagnosticsRunning,
     dataDir: dataDir()
@@ -267,24 +323,34 @@ export function registerIpc(deps: Deps): void {
   ipcMain.on('api:quit', () => deps.quitApp())
 
   handle('api:relaunchElevated', async () => {
-    if (app.isPackaged) {
-      app.relaunch()
-      deps.quitApp()
-      return
-    }
-    const quote = (value: string): string => value.replace(/'/g, "''")
+    const quote = (value: string): string => `'${value.replace(/'/g, "''")}'`
+    const args = app.isPackaged ? '' : ` -ArgumentList ${quote(app.getAppPath())}`
+
+    // The helper waits until this process has released the single-instance
+    // lock, then asks Windows to start the app elevated. Without the wait the
+    // elevated copy can see the old instance and quit immediately.
     const script = [
-      'Start-Sleep -Milliseconds 900',
-      `Start-Process -FilePath '${quote(process.execPath)}' -ArgumentList '"${quote(app.getAppPath())}"' -Verb RunAs`
+      "$ErrorActionPreference = 'Stop'",
+      `$current = Get-Process -Id ${process.pid} -ErrorAction SilentlyContinue`,
+      'if ($current) { [void]$current.WaitForExit(30000) }',
+      // If UAC is unavailable or cancelled, reopen the app without elevation
+      // instead of leaving the user with no window at all.
+      `try { Start-Process -FilePath ${quote(process.execPath)}${args} -Verb RunAs } ` +
+        `catch { Start-Process -FilePath ${quote(process.execPath)}${args} }`
     ].join('; ')
-    const child = spawn('powershell.exe', ['-NoProfile', '-WindowStyle', 'Hidden', '-Command', script], {
-      detached: true,
-      stdio: 'ignore',
-      windowsHide: true
-    })
+
+    const child = spawn(
+      'powershell.exe',
+      ['-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-Command', script],
+      {
+        detached: true,
+        stdio: 'ignore',
+        windowsHide: true
+      }
+    )
     child.unref()
     logger.info('Запрошен перезапуск с правами администратора')
-    deps.quitApp()
+    setTimeout(() => deps.quitApp(), 150)
   })
 
   logger.info(`Данные приложения: ${dataDir()}`)

@@ -2505,6 +2505,23 @@ button.chip:hover:not(:disabled) {
   font-size: 11.5px;
 }
 
+.splash-error {
+  display: flex;
+  max-width: 560px;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 0 24px;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.splash-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
 .splash-loader {
   position: relative;
   width: 120px;

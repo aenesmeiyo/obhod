@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process'
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createConnection } from 'node:net'
 import type { ProgressEvent, TgwsInfo } from '@shared/types'
@@ -123,9 +123,23 @@ export class TgwsManager {
   ensureConfig(): void {
     ensureDir(tgwsDataDir())
     const state = getState()
-    const existing: TgwsConfigFile = existsSync(this.configPath())
-      ? (JSON.parse(readFileSync(this.configPath(), 'utf8')) as TgwsConfigFile)
-      : {}
+    let existing: TgwsConfigFile = {}
+    if (existsSync(this.configPath())) {
+      try {
+        const parsed = JSON.parse(readFileSync(this.configPath(), 'utf8')) as unknown
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          existing = parsed as TgwsConfigFile
+        }
+      } catch (error) {
+        // A truncated config must not block the proxy from starting.
+        logger.warn(`config.json TG WS Proxy повреждён, создаём новый: ${String(error)}`)
+        try {
+          renameSync(this.configPath(), `${this.configPath()}.broken-${Date.now()}`)
+        } catch {
+          /* the write below repairs the file in place */
+        }
+      }
+    }
     const config: Record<string, unknown> = {
       host: '127.0.0.1',
       dc_ip: ['2:149.154.167.220', '4:149.154.167.220'],

@@ -15,7 +15,7 @@
   </a>
   <img alt="Electron" src="https://img.shields.io/badge/Electron-45-47848F?style=for-the-badge&logo=electron&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.1-lightgrey?style=for-the-badge" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.2-lightgrey?style=for-the-badge" />
 </p>
 
 <p align="center">
@@ -72,7 +72,7 @@
 
 Готовый установщик лежит в **[GitHub Releases](https://github.com/a1nessv/obhod/releases/latest)**:
 
-**[⬇ Obhod-Setup-1.0.1.exe](https://github.com/a1nessv/obhod/releases/latest)**
+**[⬇ Obhod-Setup-1.0.2.exe](https://github.com/a1nessv/obhod/releases/latest)**
 
 Папка [`releases/`](releases/) в репозитории содержит заметки к релизам и контрольные суммы.
 Сам `.exe` намеренно не коммитится в git: установщик весит ~116 МБ, а GitHub не принимает файлы
@@ -82,10 +82,12 @@
 ### Установка
 
 1. Скачайте `Obhod-Setup-*.exe` из раздела **Releases**.
-2. Запустите установщик. Он поставится в профиль пользователя, создаст ярлыки «Обход» на рабочем
-   столе и в Пуске.
-3. При первом запуске Windows запросит **права администратора**. Они нужны `winws.exe` и драйверу
-   WinDivert — без них обход DPI не работает.
+2. Запустите установщик. Он ставится **сразу для всех пользователей** в `Program Files`, без
+   вопросов о папке и режиме установки, и создаёт ярлыки «Обход» на рабочем столе и в Пуске.
+   Windows один раз спросит подтверждение UAC на установку.
+3. После установки «Обход» запускается **без запроса прав администратора**. Права нужны только
+   самому Zapret: нажмите «Перезапустить» в баннере, когда захотите включить обход DPI. Прокси
+   Telegram работает и без прав администратора.
 4. На главном экране нажмите **«Скачать Zapret»** и **«Скачать TG WS Proxy»**, затем включите нужное
    тумблером.
 
@@ -145,7 +147,9 @@
 | Лог Zapret | `%LOCALAPPDATA%\Obhod\logs\winws.log` |
 | Лог прокси | `%LOCALAPPDATA%\Obhod\tgws\TgWsProxy_data\proxy.log` |
 
-Все данные остаются локально. Приложение не отправляет телеметрию. В сеть уходят только запросы к
+Приложение устанавливается для всех пользователей, но данные и компоненты у каждого
+пользователя свои — они лежат в его `%LOCALAPPDATA%`. Все данные остаются локально. Приложение не
+отправляет телеметрию. В сеть уходят только запросы к
 GitHub (релизы и список IP), проверки целей во время теста и сам Telegram-трафик через локальный
 прокси.
 
@@ -170,7 +174,8 @@ pnpm dist       # установщик в release/
 - `adm-zip` — распаковка релизов
 - `glisse` — Liquid Glass-переключатели и пружинные анимации
 - `electron-builder` + NSIS — установщик
-- Манифест приложения: `requireAdministrator`
+- Установщик: NSIS one-click, per-machine (для всех пользователей)
+- Манифест приложения: `asInvoker`; повышение прав — только по кнопке для Zapret
 
 ### Структура
 
@@ -223,7 +228,8 @@ docs/                  скриншоты
 - One-click Telegram proxy connection.
 - No telemetry; everything runs locally.
 
-Download: **[Releases](https://github.com/a1nessv/obhod/releases/latest)**. The app requires
-administrator rights because WinDivert does. The installer is unsigned, so SmartScreen may warn you.
+Download: **[Releases](https://github.com/a1nessv/obhod/releases/latest)**. The one-click installer
+installs for all users; the app itself starts without UAC, and only Zapret asks for administrator
+rights because WinDivert does. The installer is unsigned, so SmartScreen may warn you.
 
 Build: `pnpm install && pnpm dist`. Contributions and bug reports are welcome.

@@ -136,14 +136,20 @@ export class ZapretManager {
   }
 
   getStrategies(force = false): StrategyInfo[] {
-    if (force || !this.cachedStrategies) {
-      if (!this.isInstalled()) {
-        this.cachedStrategies = []
-      } else {
-        this.cachedStrategies = listStrategies(zapretDir(), readGameFilter(zapretDir()))
+    try {
+      if (force || !this.cachedStrategies) {
+        if (!this.isInstalled()) {
+          this.cachedStrategies = []
+        } else {
+          this.cachedStrategies = listStrategies(zapretDir(), readGameFilter(zapretDir()))
+        }
       }
+      return this.cachedStrategies
+    } catch (error) {
+      logger.warn(`Не удалось прочитать стратегии Zapret: ${String(error)}`)
+      this.cachedStrategies = []
+      return this.cachedStrategies
     }
-    return this.cachedStrategies
   }
 
   getInfo(): ZapretInfo {

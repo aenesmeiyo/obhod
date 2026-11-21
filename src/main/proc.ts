@@ -37,6 +37,15 @@ export async function run(
 }
 
 export async function isElevated(): Promise<boolean> {
+  // whoami.exe is always present and does not depend on PowerShell being
+  // enabled, which matters on stripped-down Windows images. The high and
+  // system integrity SIDs are language-independent.
+  const whoami = await run('whoami.exe', ['/groups'])
+  if (whoami.code === 0 && whoami.stdout) {
+    if (/S-1-16-(12288|16384)/i.test(whoami.stdout)) return true
+    if (/S-1-16-(8192|4096)/i.test(whoami.stdout)) return false
+  }
+
   const result = await run('powershell.exe', [
     '-NoProfile',
     '-NonInteractive',

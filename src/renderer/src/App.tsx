@@ -12,7 +12,7 @@ import { SettingsPage } from './pages/SettingsPage'
 import { IconWarning } from './icons'
 
 export default function App() {
-  const state = useAppState()
+  const { state, error, retry } = useAppState()
   const progress = useProgress()
   const test = useTestProgress()
   const { toasts, dismiss } = useToasts()
@@ -40,6 +40,46 @@ export default function App() {
     } finally {
       setStrategyBusy(false)
     }
+  }
+
+  if (error) {
+    return (
+      <div className="app">
+        <div className="aurora" aria-hidden="true">
+          <span className="aurora-blob blob-one" />
+          <span className="aurora-blob blob-two" />
+          <span className="aurora-blob blob-three" />
+        </div>
+        <div className="splash">
+          <span className="splash-mark">
+            <span className="brand-ring" />
+            <span className="brand-slash" />
+          </span>
+          <span className="splash-title">Не удалось загрузить «Обход»</span>
+          <span className="splash-sub splash-error">
+            <IconWarning size={14} /> {error}
+          </span>
+          <div className="splash-actions">
+            <button type="button" className="button button-light" onClick={retry}>
+              Повторить
+            </button>
+            <button
+              type="button"
+              className="button button-ghost"
+              onClick={() => {
+                try {
+                  void window.obhod?.openFolder?.('logs').catch(() => undefined)
+                } catch {
+                  /* the preload bridge may be missing entirely */
+                }
+              }}
+            >
+              Открыть журнал
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!state) {
