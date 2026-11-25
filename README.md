@@ -15,7 +15,7 @@
   </a>
   <img alt="Electron" src="https://img.shields.io/badge/Electron-45-47848F?style=for-the-badge&logo=electron&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
-  <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-lightgrey?style=for-the-badge" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.3-lightgrey?style=for-the-badge" />
 </p>
 
 <p align="center">
@@ -72,7 +72,7 @@
 
 Готовый установщик лежит в **[GitHub Releases](https://github.com/aenesmeiyo/obhod/releases/latest)**:
 
-**[⬇ Obhod-Setup-1.1.0.exe](https://github.com/aenesmeiyo/obhod/releases/latest)**
+**[⬇ Obhod-Setup-1.0.3.exe](https://github.com/aenesmeiyo/obhod/releases/latest)**
 
 Папка [`releases/`](releases/) в репозитории содержит заметки к релизам и контрольные суммы.
 Сам `.exe` намеренно не коммитится в git: установщик весит ~116 МБ, а GitHub не принимает файлы
