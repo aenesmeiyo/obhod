@@ -6,7 +6,7 @@
 ## Сообщить о проблеме
 
 1. Проверьте, что проблема не в самом zapret/tg-ws-proxy: запустите их официально и сравните.
-2. Откройте [Issue](https://github.com/a1nessv/obhod/issues) и приложите:
+2. Откройте [Issue](https://github.com/aenesmeiyo/obhod/issues) и приложите:
    - версию Windows и версию «Обхода» (Настройки → Приложение);
    - что вы делали и что ожидали;
    - `%LOCALAPPDATA%\Obhod\logs\app.log` (можно обрезать до последних 100 строк);

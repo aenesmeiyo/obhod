@@ -1,6 +1,6 @@
 # Релизы
 
-Скачать установщик: **[GitHub Releases →](https://github.com/a1nessv/obhod/releases/latest)**
+Скачать установщик: **[GitHub Releases →](https://github.com/aenesmeiyo/obhod/releases/latest)**
 
 | Файл | Размер | SHA-256 |
 | --- | --- | --- |

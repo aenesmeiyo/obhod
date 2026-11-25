@@ -1,6 +1,6 @@
 {
   "name": "obhod",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Обход — единый центр управления zapret-discord-youtube и TG WS Proxy",
   "main": "./out/main/index.js",
   "author": "Obhod contributors",
@@ -8,11 +8,11 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/a1nessv/obhod.git"
+    "url": "git+https://github.com/aenesmeiyo/obhod.git"
   },
-  "homepage": "https://github.com/a1nessv/obhod#readme",
+  "homepage": "https://github.com/aenesmeiyo/obhod#readme",
   "bugs": {
-    "url": "https://github.com/a1nessv/obhod/issues"
+    "url": "https://github.com/aenesmeiyo/obhod/issues"
   },
   "keywords": [
     "zapret",

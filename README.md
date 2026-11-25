@@ -10,12 +10,12 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/a1nessv/obhod/releases/latest">
+  <a href="https://github.com/aenesmeiyo/obhod/releases/latest">
     <img alt="Скачать для Windows" src="https://img.shields.io/badge/Download-Windows%2010%2F11-2ea043?style=for-the-badge&logo=windows&logoColor=white" />
   </a>
   <img alt="Electron" src="https://img.shields.io/badge/Electron-45-47848F?style=for-the-badge&logo=electron&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.2-lightgrey?style=for-the-badge" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-lightgrey?style=for-the-badge" />
 </p>
 
 <p align="center">
@@ -70,9 +70,9 @@
 
 ## Скачать
 
-Готовый установщик лежит в **[GitHub Releases](https://github.com/a1nessv/obhod/releases/latest)**:
+Готовый установщик лежит в **[GitHub Releases](https://github.com/aenesmeiyo/obhod/releases/latest)**:
 
-**[⬇ Obhod-Setup-1.0.2.exe](https://github.com/a1nessv/obhod/releases/latest)**
+**[⬇ Obhod-Setup-1.1.0.exe](https://github.com/aenesmeiyo/obhod/releases/latest)**
 
 Папка [`releases/`](releases/) в репозитории содержит заметки к релизам и контрольные суммы.
 Сам `.exe` намеренно не коммитится в git: установщик весит ~116 МБ, а GitHub не принимает файлы
@@ -241,7 +241,7 @@ docs/                  скриншоты
 - One-click Telegram proxy connection.
 - No telemetry; everything runs locally.
 
-Download: **[Releases](https://github.com/a1nessv/obhod/releases/latest)**. The one-click installer
+Download: **[Releases](https://github.com/aenesmeiyo/obhod/releases/latest)**. The one-click installer
 installs for all users; the app itself starts without UAC, and only Zapret asks for administrator
 rights because WinDivert does. The installer is unsigned, so SmartScreen may warn you.
 

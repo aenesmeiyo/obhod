@@ -3,7 +3,7 @@
 Все заметные изменения проекта. Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/),
 версии — [SemVer](https://semver.org/lang/ru/).
 
-## [Не выпущено]
+## [1.1.0] — 2026-11-25
 
 ### Изменено
 
@@ -68,5 +68,6 @@
 - Тёмный Liquid Glass-интерфейс на glisse.
 - GitHub Actions для сборки установщика и публикации релизов.
 
-[1.0.1]: https://github.com/a1nessv/obhod/releases/tag/v1.0.1
-[1.0.0]: https://github.com/a1nessv/obhod/releases/tag/v1.0.0
+[1.1.0]: https://github.com/aenesmeiyo/obhod/releases/tag/v1.1.0
+[1.0.1]: https://github.com/aenesmeiyo/obhod/releases/tag/v1.0.1
+[1.0.0]: https://github.com/aenesmeiyo/obhod/releases/tag/v1.0.0

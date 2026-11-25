@@ -3,7 +3,7 @@
 ## Как сообщить об уязвимости
 
 Не создавайте публичный Issue, если речь об уязвимости, которая может навредить пользователям.
-Используйте [GitHub Security Advisories](https://github.com/a1nessv/obhod/security/advisories/new)
+Используйте [GitHub Security Advisories](https://github.com/aenesmeiyo/obhod/security/advisories/new)
 или напишите владельцу репозитория приватно.
 
 Приложите:
