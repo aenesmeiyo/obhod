@@ -1796,7 +1796,7 @@ button.chip:hover:not(:disabled) {
 
 .results-head {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 168px 58px 72px 120px;
+  grid-template-columns: 28px minmax(0, 1fr) 150px 52px 84px 58px 108px;
   gap: 12px;
   padding: 10px 12px;
   color: rgba(255, 255, 255, 0.3);
@@ -1830,7 +1830,7 @@ button.chip:hover:not(:disabled) {
 
 .result-main {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 168px 58px 72px 120px;
+  grid-template-columns: 28px minmax(0, 1fr) 150px 52px 84px 58px 108px;
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
@@ -1911,10 +1911,49 @@ button.chip:hover:not(:disabled) {
 }
 
 .result-ping,
-.result-time {
+.result-time,
+.result-frozen {
   color: var(--muted);
   font-size: 10.5px;
   font-variant-numeric: tabular-nums;
+}
+
+.result-frozen.is-warn {
+  color: #ffd60a;
+}
+
+.result-fix {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fix-plus {
+  color: #8ff0a8;
+}
+
+.fix-minus {
+  color: #ff9d97;
+}
+
+.fix-zero {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.result-name .verified-mark {
+  color: #8ff0a8;
+  font-size: 10px;
+}
+
+.console-baseline {
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 10px;
+  white-space: nowrap;
 }
 
 .result-actions {
@@ -1953,6 +1992,22 @@ button.chip:hover:not(:disabled) {
 
 .check-row.is-ok .check-dot {
   background: var(--green);
+}
+
+.check-row.is-frozen .check-dot {
+  background: #ffd60a;
+}
+
+.check-before {
+  margin-left: 6px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(255, 69, 58, 0.12);
+  color: #ff9d97;
+  font-size: 8px;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .check-name {

@@ -76,11 +76,29 @@ export class ZapretManager {
 
   init(): void {
     this.syncVersion()
-    if (this.isInstalled()) ensureUserLists(zapretDir())
+    if (this.isInstalled()) {
+      ensureUserLists(zapretDir())
+      this.restoreTestIpset()
+    }
     this.pollTimer = setInterval(() => {
       void this.poll()
     }, 2500)
     void this.poll()
+  }
+
+  /** A crash during the strategy test leaves the real IP list in this file. */
+  private restoreTestIpset(): void {
+    const lists = join(zapretDir(), 'lists')
+    const backup = join(lists, 'ipset-all.test-backup.txt')
+    const target = join(lists, 'ipset-all.txt')
+    if (!existsSync(backup)) return
+    try {
+      if (existsSync(target)) rmSync(target, { force: true })
+      renameSync(backup, target)
+      logger.warn('Список IP восстановлен после прерванного теста')
+    } catch (error) {
+      logger.warn(`Не удалось восстановить список IP: ${String(error)}`)
+    }
   }
 
   dispose(): void {

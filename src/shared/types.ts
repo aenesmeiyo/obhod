@@ -64,6 +64,8 @@ export interface UiSettings {
   minimizeToTray: boolean
   launchAtLogin: boolean
   checkUpdatesOnLaunch: boolean
+  /** Test several strategies at once using source-port-scoped winws lanes. */
+  parallelTest: boolean
 }
 
 export interface AppState {
@@ -96,11 +98,30 @@ export interface ToastEvent {
   message?: string
 }
 
+export type TestState = 'ok' | 'frozen' | 'blocked' | 'unsupported' | 'error'
+export type TestGroup = 'service' | 'freeze' | 'control'
+export type TestMode = 'tls12' | 'tls13'
+
+/**
+ * One TCP 16-20 freeze check: a 64 KB POST over TLS. The censor freezes a
+ * connection after ~25 packets (~16-20 KB) in either direction, so a blocked
+ * target accepts bytes and then never answers.
+ */
 export interface TestCheck {
   target: string
+  host: string
+  group: TestGroup
+  mode: TestMode
   ok: boolean
+  state: TestState
+  /** Short human-readable verdict: "HTTP 404", "ЗАМОРОЗКА", "HELLO TIMEOUT"... */
   status: string
   ms: number
+  code: number | null
+  upBytes: number
+  downBytes: number
+  /** Baseline verdict on the same target, when known. */
+  before?: 'ok' | 'bad'
 }
 
 export interface TestStrategyResult {
@@ -108,22 +129,41 @@ export interface TestStrategyResult {
   label: string
   valid: boolean
   started: boolean
+  /** Checks that returned an HTTP response. */
   ok: number
   total: number
-  pingOk: number
-  pingTotal: number
+  /** Connections that accepted data but never answered (the 16-20 signature). */
+  frozen: number
+  /** Other failed checks (RST, TLS error, DNS). */
+  failed: number
+  /** Targets broken by default that this strategy restored. */
+  fixed: number
+  /** Targets that worked by default and still work. */
+  kept: number
+  /** Targets that worked by default and this strategy broke. */
+  broken: number
+  /** Ranking score: fixed*3 + kept - broken*3. */
+  score: number
   avgMs: number
   checks: TestCheck[]
+  /** The best strategy is re-checked a second time after screening. */
+  verified?: boolean
   error?: string
 }
 
 export interface TestProgress {
   status: 'running' | 'done' | 'cancelled' | 'error'
+  phase: 'baseline' | 'strategies' | 'verify' | 'done'
   index: number
   total: number
   current: string | null
   results: TestStrategyResult[]
+  /** Results measured with Zapret stopped, used as the comparison point. */
+  baseline: TestCheck[] | null
   best: string | null
+  bestVerified: boolean
+  /** How many strategies were tested simultaneously (1 = sequential). */
+  lanes: number
   message: string | null
 }
 

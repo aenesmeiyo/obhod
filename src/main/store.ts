@@ -52,7 +52,8 @@ function defaults(): PersistedState {
     ui: {
       minimizeToTray: true,
       launchAtLogin: false,
-      checkUpdatesOnLaunch: true
+      checkUpdatesOnLaunch: true,
+      parallelTest: true
     }
   }
 }

@@ -382,6 +382,17 @@ export function SettingsPage({ state, onOpenStrategy }: Props) {
             />
           </Row>
 
+          <Row
+            title="Параллельный тест стратегий"
+            subtitle="По 3 стратегии сразу через непересекающиеся фильтры winws. Выключите, если результаты кажутся странными"
+          >
+            <GlassSwitch
+              checked={state.ui.parallelTest}
+              onChange={(value) => void window.obhod.setUiSettings({ parallelTest: value })}
+              label="Параллельный тест стратегий"
+            />
+          </Row>
+
           <div className="section-footer">
             <button type="button" className="button button-ghost" onClick={() => void window.obhod.openFolder('data')}>
               <IconFolder size={15} /> Папка данных

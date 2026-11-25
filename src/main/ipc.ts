@@ -257,11 +257,15 @@ export function registerIpc(deps: Deps): void {
       events.toast('error', 'Тест не запустился', asErrorMessage(error))
       events.test({
         status: 'error',
+        phase: 'done',
         index: 0,
         total: 0,
         current: null,
         results: [],
+        baseline: null,
         best: null,
+        bestVerified: false,
+        lanes: 1,
         message: asErrorMessage(error)
       })
     })
@@ -364,8 +368,11 @@ export function registerIpc(deps: Deps): void {
     ipcMain.handle('api:debugEmitTest', () => {
       const now = Date.now()
       const results = buildState().zapret.strategies.map((strategy, index) => {
-        const total = 24
+        const total = 22
         const ok = Math.max(4, total - Math.floor((index * 7) % 15))
+        const frozen = Math.min(total - ok, Math.floor((index * 3) % 6))
+        const fixed = Math.max(0, 8 - Math.floor(index / 3))
+        const broken = index % 4 === 0 ? 1 : 0
         return {
           strategy: strategy.file,
           label: strategy.label,
@@ -373,23 +380,58 @@ export function registerIpc(deps: Deps): void {
           started: true,
           ok,
           total,
-          pingOk: 8 - (index % 4),
-          pingTotal: 10,
+          frozen,
+          failed: total - ok - frozen,
+          fixed,
+          kept: ok - fixed,
+          broken,
+          score: fixed * 3 + (ok - fixed) - broken * 3,
           avgMs: 320 + index * 37,
+          verified: index === 0,
           checks: [
-            { target: 'DiscordMain HTTP', ok: ok > 8, status: ok > 8 ? '200' : 'timeout', ms: 300 + index * 9 },
-            { target: 'YouTubeWeb TLS1.3', ok: ok > 10, status: ok > 10 ? '200' : 'timeout', ms: 500 + index * 11 }
+            {
+              target: 'Discord · TLS 1.3',
+              host: 'discord.com',
+              group: 'service' as const,
+              mode: 'tls13' as const,
+              ok: ok > 8,
+              state: ok > 8 ? ('ok' as const) : ('frozen' as const),
+              status: ok > 8 ? 'HTTP 200' : 'Заморозка',
+              ms: 300 + index * 9,
+              code: ok > 8 ? 200 : null,
+              upBytes: 65536,
+              downBytes: 0,
+              before: 'bad' as const
+            },
+            {
+              target: 'YouTube · TLS 1.3',
+              host: 'www.youtube.com',
+              group: 'service' as const,
+              mode: 'tls13' as const,
+              ok: ok > 10,
+              state: ok > 10 ? ('ok' as const) : ('blocked' as const),
+              status: ok > 10 ? 'HTTP 200' : 'Hello таймаут',
+              ms: 500 + index * 11,
+              code: ok > 10 ? 200 : null,
+              upBytes: 65536,
+              downBytes: 0,
+              before: 'bad' as const
+            }
           ]
         }
       })
-      const best = results.reduce((a, b) => (a.ok >= b.ok ? a : b))
+      const best = results.reduce((a, b) => (a.score >= b.score ? a : b))
       events.test({
         status: 'done',
+        phase: 'done',
         index: results.length,
         total: results.length,
         current: null,
         results,
+        baseline: null,
         best: best.strategy,
+        bestVerified: true,
+        lanes: 3,
         message: null
       })
       return { at: now, count: results.length }
