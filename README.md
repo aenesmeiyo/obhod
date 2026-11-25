@@ -15,7 +15,7 @@
   </a>
   <img alt="Electron" src="https://img.shields.io/badge/Electron-45-47848F?style=for-the-badge&logo=electron&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.3-lightgrey?style=for-the-badge" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.4-lightgrey?style=for-the-badge" />
 </p>
 
 <p align="center">
@@ -45,7 +45,7 @@
 | **Два тумблера** | Zapret и Telegram-прокси с честным статусом процессов и индикацией в трее. |
 | **Фоновый запуск** | Стратегии `.bat` разбираются на аргументы, `winws.exe` стартует скрыто. Никаких окон `cmd`. |
 | **Установка в один клик** | Оба компонента скачиваются из официальных релизов Flowseal и распаковываются в данные приложения. |
-| **Автообновления** | Тихая проверка GitHub при запуске. Если есть новая версия — аккуратный баннер. Старые файлы заменяются, настройки сохраняются. |
+| **Автообновления** | Тихая проверка GitHub при запуске (можно отключить). Новая версия «Обхода» скачивается и устанавливается сама; компоненты Flowseal обновляются отдельно с сохранением настроек. |
 | **Game Filter** | Как в `service.bat`: выкл / TCP / UDP / TCP+UDP и свои диапазоны портов. |
 | **IPSet** | Режимы «Список», «Выкл», «Любой» и обновление списка IP с GitHub. |
 | **Тест стратегий** | Проверяет заморозку TCP 16–20 на Discord, YouTube и публичных хостах, сравнивает с фоном без обхода и строит рейтинг. |
@@ -72,7 +72,7 @@
 
 Готовый установщик лежит в **[GitHub Releases](https://github.com/aenesmeiyo/obhod/releases/latest)**:
 
-**[⬇ Obhod-Setup-1.0.3.exe](https://github.com/aenesmeiyo/obhod/releases/latest)**
+**[⬇ Obhod-Setup-1.0.4.exe](https://github.com/aenesmeiyo/obhod/releases/latest)**
 
 Папка [`releases/`](releases/) в репозитории содержит заметки к релизам и контрольные суммы.
 Сам `.exe` намеренно не коммитится в git: установщик весит ~116 МБ, а GitHub не принимает файлы

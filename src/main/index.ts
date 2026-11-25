@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { setBroadcast, events } from './events'
 import { setLogSink, logger, logFilePath } from './logger'
 import { buildState, registerIpc, setElevated } from './ipc'
-import { zapret, tgws, tester, updates } from './services'
+import { zapret, tgws, tester, updates, appUpdater } from './services'
 import { getState, updateState } from './store'
 import { ensureAppDirs, dataDir } from './paths'
 import { isElevated } from './proc'
@@ -134,6 +134,7 @@ function refreshTray(): void {
         label: 'Проверить обновления',
         click: () => {
           void updates.check(true, true)
+          void appUpdater.check(true, true)
         }
       },
       {
@@ -334,9 +335,15 @@ async function bootstrap(): Promise<void> {
   } catch (error) {
     logger.warn(`Не удалось запустить проверку обновлений: ${describeError(error)}`)
   }
+  try {
+    appUpdater.init()
+  } catch (error) {
+    logger.warn(`Не удалось запустить самообновление: ${describeError(error)}`)
+  }
   if (getState().ui.checkUpdatesOnLaunch) {
     setTimeout(() => {
       void updates.check(false)
+      void appUpdater.check(false)
     }, 3500)
   }
 

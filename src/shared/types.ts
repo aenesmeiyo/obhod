@@ -68,10 +68,22 @@ export interface UiSettings {
   parallelTest: boolean
 }
 
+export interface AppUpdateInfo {
+  current: string
+  latest: string | null
+  available: boolean
+  downloading: boolean
+  downloaded: boolean
+  percent: number
+  checkedAt: number | null
+  error: string | null
+}
+
 export interface AppState {
   ready: boolean
   elevated: boolean
   appVersion: string
+  appUpdate: AppUpdateInfo
   zapret: ZapretInfo
   tgws: TgwsInfo
   ui: UiSettings
@@ -207,6 +219,9 @@ export interface ObhodApi {
   runDiagnostics(): Promise<DiagnosticsResult>
   checkUpdates(force?: boolean): Promise<void>
   applyUpdate(component: ComponentId): Promise<void>
+  checkAppUpdate(force?: boolean): Promise<void>
+  downloadAppUpdate(): Promise<void>
+  installAppUpdate(): Promise<void>
 
   installTgws(): Promise<void>
   removeTgws(): Promise<void>

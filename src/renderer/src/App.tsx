@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { NavTarget } from '@shared/types'
 import { useAppState, useLogs, useProgress, useTestProgress, useToasts } from './hooks'
 import { TitleBar } from './components/TitleBar'
+import { AppUpdateBanner } from './components/AppUpdateBanner'
 import { UpdateBanner } from './components/UpdateBanner'
 import { ToastHost } from './components/ToastHost'
 import { LogsDrawer } from './components/LogsDrawer'
@@ -133,6 +134,7 @@ export default function App() {
             </div>
           ) : null}
 
+          <AppUpdateBanner state={state} />
           <UpdateBanner state={state} onApply={applyUpdates} />
 
           <div className="page-stage" key={page}>

@@ -120,6 +120,7 @@ const ipsetOptions: Array<SegmentedOption<IpsetMode>> = [
 
 export function SettingsPage({ state, onOpenStrategy }: Props) {
   const { zapret, tgws } = state
+  const appUpdate = state.appUpdate
   const [game, setGame] = useState<GameFilter>(zapret.gameFilter)
   const [gameDirty, setGameDirty] = useState(false)
   const [savingGame, setSavingGame] = useState(false)
@@ -374,7 +375,47 @@ export function SettingsPage({ state, onOpenStrategy }: Props) {
             />
           </Row>
 
-          <Row title="Проверять обновления при запуске" subtitle="Тихий запрос к GitHub в фоне">
+          <Row
+            title="Версия приложения"
+            subtitle={
+              appUpdate.downloaded
+                ? 'Обновление скачано — установится при выходе'
+                : appUpdate.available && appUpdate.latest
+                  ? `Доступно обновление ${appUpdate.latest}`
+                  : `Обход ${state.appVersion}`
+            }
+          >
+            {appUpdate.downloaded ? (
+              <button
+                type="button"
+                className="button button-mini button-light"
+                onClick={() => void run('app-install', () => window.obhod.installAppUpdate())}
+                disabled={busy !== null}
+              >
+                Перезапустить
+              </button>
+            ) : appUpdate.available ? (
+              <button
+                type="button"
+                className="button button-mini button-light"
+                onClick={() => void run('app-download', () => window.obhod.downloadAppUpdate())}
+                disabled={busy !== null || appUpdate.downloading}
+              >
+                {appUpdate.downloading ? `Скачиваем ${appUpdate.percent}%` : 'Скачать'}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="button button-mini"
+                onClick={() => void run('app-check', () => window.obhod.checkAppUpdate(true))}
+                disabled={busy !== null}
+              >
+                <IconRefresh size={14} /> Проверить
+              </button>
+            )}
+          </Row>
+
+          <Row title="Проверять обновления при запуске" subtitle="Тихий запрос к GitHub: приложение и компоненты">
             <GlassSwitch
               checked={state.ui.checkUpdatesOnLaunch}
               onChange={(value) => void window.obhod.setUiSettings({ checkUpdatesOnLaunch: value })}

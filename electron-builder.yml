@@ -15,6 +15,12 @@ asarUnpack:
 extraResources:
   - from: resources
     to: resources
+# Used by electron-updater. The release workflow uploads latest.yml next to the
+# installer so the installed app can update itself.
+publish:
+  provider: github
+  owner: aenesmeiyo
+  repo: obhod
 win:
   target:
     - target: nsis

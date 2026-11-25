@@ -11,7 +11,7 @@ import type {
   UiSettings,
   ZapretInfo
 } from '@shared/types'
-import { zapret, tgws, tester, updates } from './services'
+import { zapret, tgws, tester, updates, appUpdater } from './services'
 import { getState, updateState } from './store'
 import { logger, getLogs } from './logger'
 import { events } from './events'
@@ -87,6 +87,7 @@ export function buildState(): AppState {
     ready: true,
     elevated,
     appVersion: app.getVersion(),
+    appUpdate: appUpdater.getInfo(),
     zapret: zapretInfo,
     tgws: tgwsInfo,
     ui: persisted.ui,
@@ -205,6 +206,15 @@ export function registerIpc(deps: Deps): void {
   })
   handle('api:checkUpdates', async (force?: boolean) => {
     await updates.check(Boolean(force), Boolean(force))
+  })
+  handle('api:checkAppUpdate', async (force?: boolean) => {
+    await appUpdater.check(Boolean(force), true)
+  })
+  handle('api:downloadAppUpdate', async () => {
+    await appUpdater.download()
+  })
+  handle('api:installAppUpdate', () => {
+    appUpdater.install()
   })
   handle('api:applyUpdate', async (component: unknown) => {
     if (!isComponent(component)) throw new Error('Неизвестный компонент')

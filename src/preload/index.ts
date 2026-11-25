@@ -41,6 +41,9 @@ const api: ObhodApi = {
   runDiagnostics: () => ipcRenderer.invoke('api:runDiagnostics') as Promise<DiagnosticsResult>,
   checkUpdates: (force?: boolean) => ipcRenderer.invoke('api:checkUpdates', force),
   applyUpdate: (component: ComponentId) => ipcRenderer.invoke('api:applyUpdate', component),
+  checkAppUpdate: (force?: boolean) => ipcRenderer.invoke('api:checkAppUpdate', force),
+  downloadAppUpdate: () => ipcRenderer.invoke('api:downloadAppUpdate'),
+  installAppUpdate: () => ipcRenderer.invoke('api:installAppUpdate'),
 
   installTgws: () => ipcRenderer.invoke('api:installTgws'),
   removeTgws: () => ipcRenderer.invoke('api:removeTgws'),
